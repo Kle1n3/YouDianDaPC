@@ -6,6 +6,7 @@ import router from '@/router'
 import store from '@/store'
 // import '@/utlis/auth'
 import './permission'
+import './icons/index.js'
 
 Vue.config.productionTip = false
 Vue.use(ElementUI);
