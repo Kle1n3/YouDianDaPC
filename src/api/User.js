@@ -10,3 +10,10 @@ export const getUserProfileApi = () => service({
     method: 'post',
     url: '/admin/index/profile',
 })
+
+export const uploadFileApi = (params, data) => service({
+    method: 'post',
+    url: '/admin/common/upload',
+    params,
+    data,
+})
