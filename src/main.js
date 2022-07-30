@@ -7,6 +7,12 @@ import store from '@/store'
 // import '@/utlis/auth'
 import './permission'
 
+import * as filters from '@/filters'
+
+Object.keys(filters).forEach(key => {
+  Vue.filter(key, filters[key])
+})
+
 Vue.config.productionTip = false
 Vue.use(ElementUI);
 
