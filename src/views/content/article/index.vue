@@ -42,7 +42,7 @@
     <div class="custom-table">
       <div class="action-box" style="margin-bottom: 10px">
         <el-button
-          @click="dialogVisible = true"
+          @click="$router.push('/content_article/add')"
           type="primary"
           size="small"
           plain
@@ -149,7 +149,6 @@ export default {
   data() {
     return {
       cateList: [],
-      dialogVisible: false,
       formSearch: {
         title: "",
         cateid: "",

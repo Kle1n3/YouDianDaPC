@@ -26,3 +26,8 @@ export const delArticleApi = params => service({
     params,
 })
 
+export const uploadPicApi = (data) => service({
+    method: 'post',
+    url: '/admin/common/upload?type=images',
+    data,
+})

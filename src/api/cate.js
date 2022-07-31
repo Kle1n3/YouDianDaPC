@@ -25,3 +25,7 @@ export const delCateApi = params => service({
     url: '/admin/ydd_cate/del',
     params,
 })
+
+export const getCateAllApi = () => service({
+    url: '/admin/ydd_cate/all',
+})

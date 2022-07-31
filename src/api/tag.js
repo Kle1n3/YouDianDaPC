@@ -25,3 +25,7 @@ export const delTagApi = params => service({
     url: '/admin/ydd_tag/del',
     params,
 })
+
+export const getTagAllApi = () => service({
+    url: '/admin/ydd_tag/all',
+})

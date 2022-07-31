@@ -19,5 +19,10 @@ export default {
             component: () => import('@/views/content/article'),
             meta: { title: '文章管理' },
         },
+        {
+            path: '/content_article/add',
+            component: () => import('@/views/content/article/addArticle'),
+            meta: { title: '添加文章' },
+        }
     ]
 }
