@@ -105,7 +105,7 @@
           <el-table-column label="操作" align="center">
             <template slot-scope="scope">
               <el-button
-                @click="handleClick(scope.row.id)"
+                @click="editbtn(scope.row.id)"
                 type="primary"
                 circle
                 size="small"
@@ -232,6 +232,9 @@ export default {
     handleCurrentChange(val) {
       this.params.page = val;
       this.initData();
+    },
+    editbtn(id){
+      this.$router.push('/content_article/edit/'+id)
     },
     async del(id){
       await this.$confirm('确认删除吗？')

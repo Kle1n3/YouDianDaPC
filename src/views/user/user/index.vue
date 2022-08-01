@@ -157,39 +157,19 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="性别" prop="sex" size="small">
-              <el-switch v-model="male" active-text="男" inactive-text="女">
+              <el-switch v-model="male" active-text="男" inactive-text="女" active-value="0" :inactive-value="1">
               </el-switch>
             </el-form-item>
           </el-col>
         </el-row>
-        <el-form-item label="用户头像">
-          <el-upload
-            class="upload-demo"
-            action="https://jsonplaceholder.typicode.com/posts/"
-            :on-preview="handlePreview"
-            :on-remove="handleRemove"
-            :file-list="fileList"
-            list-type="picture"
-          >
-            <el-button size="small" type="primary">点击上传</el-button>
-            <div slot="tip" class="el-upload__tip">
-              只能上传jpg/png文件，且不超过500kb
-            </div>
-          </el-upload>
+        <el-form-item label="用户头像" prop="pic">
+              <UploadPic @picUrl='formData.icon=$event' @clearValidate='handleFileChange' />
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button size="small" @click="dialogVisible = false">取 消</el-button>
         <el-button size="small" type="primary" @click="add">确 定</el-button>
       </span>
-    </el-dialog>
-    <!-- 图片预览 -->
-    <el-dialog
-      title="图片"
-      :visible.sync="picDialogVisible"
-      width="30%"
-    >
-      <img :src="imgUrl" style="width: 100%" />
     </el-dialog>
   </el-card>
 </template>
@@ -202,12 +182,14 @@ import {
   getMemberInfoApi,
   delMemberApi,
 } from "@/api/member";
+import UploadPic from '@/components/uploadPic'
 export default {
   name: "Member",
+  components: {
+    UploadPic,
+  },
   data() {
     return {
-      picDialogVisible: false,
-      imgUrl:'',
       options: [
         {
           value: "0",
@@ -222,24 +204,24 @@ export default {
       formSearch: {
         username: "",
         mobile: "",
-        sex: "",
+        sex: '',
       },
       formData: {
         username: "",
         icon: "",
         mobile: "",
         password: "",
-        sex: "",
+        sex: 1,
       },
       male: true,
-      fileList: [],
       formRules: {
         username: [
           { required: true, message: "请输入用户名", trigger: "blur" },
         ],
         mobile: [{ required: true, message: "请输入手机号", trigger: "blur" }],
         password: [{ required: true, message: "请输入密码", trigger: "blur" }],
-        sex: [{ required: true, message: "请选择性别", trigger: "blur" }],
+        sex: [{ required: true, message: "请选择性别", trigger: "change" }],
+        // pic: [{ required: true, message: "必须", trigger: "change" }],
       },
       params: {
         sex: "",
@@ -293,14 +275,6 @@ export default {
       this.formSearch.sex = "";
       this.initData();
     },
-    handleRemove(file, fileList) {
-      console.log(file, fileList);
-    },
-    handlePreview(file) {
-      this.picDialogVisible=true
-      this.imgUrl = file.url
-      console.log(file);
-    },
     async add() {
       try {
         await this.$refs.form.validate();
@@ -337,6 +311,11 @@ export default {
         password: "",
       };
     },
+    // handleFileChange(){
+    //   // this.formRules.pic=[]
+    //   // this.$refs.form.clearValidate("pic")
+    //   console.log('-------');
+    // }
   },
 };
 </script>

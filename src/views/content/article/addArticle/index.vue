@@ -74,8 +74,8 @@
                   v-model="formData.ishot"
                   active-text="是"
                   inactive-text="否"
-                  :active-value=1
-                  :inactive-value=0
+                  :active-value="1"
+                  :inactive-value="0"
                 >
                 </el-switch>
               </el-form-item>
@@ -86,8 +86,8 @@
                   v-model="formData.istop"
                   active-text="是"
                   inactive-text="否"
-                  :active-value=1
-                  :inactive-value=0
+                  :active-value="1"
+                  :inactive-value="0"
                 >
                 </el-switch>
               </el-form-item>
@@ -105,16 +105,11 @@
           </el-row>
           <el-row class="formItem" type="flex" justify="space-between">
             <el-form-item label="文章缩略图" prop="pic">
-              <el-upload
-                class="upload-demo"
-                action="http://124.223.14.236:8060/admin/common/upload?type=images"
-                :on-preview="handlePreview"
-                :http-request='uploadPic'
-                :file-list="fileList"
-                list-type="picture"
-              >
-                <el-button size="small" type="primary">点击上传</el-button>
-              </el-upload>
+              <UploadPic
+                :fileList="ImgList"
+                @picUrl="formData.pic = $event"
+                @clearValidate="handleFileChange"
+              />
             </el-form-item>
           </el-row>
           <el-row class="formItem" type="flex" justify="space-between">
@@ -129,9 +124,27 @@
             </el-form-item>
           </el-row>
           <el-row class="formItem" type="flex" justify="center">
-            <el-button @click="addbtn" icon="el-icon-plus" size="small" type="success">立即发布</el-button>
-            <el-button @click="draftbtn" icon="el-icon-folder-checked" size="small" type="primary">保存草稿</el-button>
-            <el-button @click="$router.back()" icon="el-icon-back" size="small" type="warning">返回列表</el-button>
+            <el-button
+              @click="addbtn"
+              icon="el-icon-plus"
+              size="small"
+              type="success"
+              >立即发布</el-button
+            >
+            <el-button
+              @click="draftbtn"
+              icon="el-icon-folder-checked"
+              size="small"
+              type="primary"
+              >保存草稿</el-button
+            >
+            <el-button
+              @click="$router.back()"
+              icon="el-icon-back"
+              size="small"
+              type="warning"
+              >返回列表</el-button
+            >
           </el-row>
         </el-tab-pane>
         <el-tab-pane label="SEO信息">
@@ -160,9 +173,27 @@
             </el-form-item>
           </el-row>
           <el-row class="formItem" type="flex" justify="center">
-            <el-button @click="addbtn" icon="el-icon-plus" size="small" type="success">立即发布</el-button>
-            <el-button @click="draftbtn" icon="el-icon-folder-checked" size="small" type="primary">保存草稿</el-button>
-            <el-button @click="$router.back()" icon="el-icon-back" size="small" type="warning">返回列表</el-button>
+            <el-button
+              @click="addbtn"
+              icon="el-icon-plus"
+              size="small"
+              type="success"
+              >立即发布</el-button
+            >
+            <el-button
+              @click="draftbtn"
+              icon="el-icon-folder-checked"
+              size="small"
+              type="primary"
+              >保存草稿</el-button
+            >
+            <el-button
+              @click="$router.back()"
+              icon="el-icon-back"
+              size="small"
+              type="warning"
+              >返回列表</el-button
+            >
           </el-row>
         </el-tab-pane>
         <el-tab-pane label="文章内容">
@@ -186,9 +217,27 @@
             </el-form-item>
           </el-row>
           <el-row class="formItem" type="flex" justify="center">
-            <el-button @click="addbtn" icon="el-icon-plus" size="small" type="success">立即发布</el-button>
-            <el-button @click="draftbtn" icon="el-icon-folder-checked" size="small" type="primary">保存草稿</el-button>
-            <el-button @click="$router.back()" icon="el-icon-back" size="small" type="warning">返回列表</el-button>
+            <el-button
+              @click="addbtn"
+              icon="el-icon-plus"
+              size="small"
+              type="success"
+              >立即发布</el-button
+            >
+            <el-button
+              @click="draftbtn"
+              icon="el-icon-folder-checked"
+              size="small"
+              type="primary"
+              >保存草稿</el-button
+            >
+            <el-button
+              @click="$router.back()"
+              icon="el-icon-back"
+              size="small"
+              type="warning"
+              >返回列表</el-button
+            >
           </el-row>
         </el-tab-pane>
       </el-tabs>
@@ -199,95 +248,126 @@
 <script>
 import { getCateAllApi } from "@/api/cate";
 import { getTagAllApi } from "@/api/tag";
-import {uploadPicApi,addArticleApi} from '@/api/article'
-import Vue from "vue";
+import {
+  addArticleApi,
+  getArticleRowInfoApi,
+  editArticleApi,
+} from "@/api/article";
 import { Editor, Toolbar } from "@wangeditor/editor-for-vue";
+import UploadPic from "@/components/uploadPic";
 export default {
   name: "AddArticle",
-  components: { Editor, Toolbar },
+  components: { Editor, Toolbar, UploadPic },
   data() {
     return {
       formData: {
         click: 1,
         ishot: "0",
         istop: "0",
-        status:'',
+        status: "",
         tags: [],
-        pic:'',
+        pic: "",
       },
       formRules: {
         title: [{ required: true, message: "必须", trigger: "blur" }],
         author: [{ required: true, message: "必须", trigger: "blur" }],
-        cateid: [{ required: true, message: "必须", trigger: "blur" }],
+        cateid: [{ required: true, message: "必须", trigger: "change" }],
         click: [{ required: true, message: "必须", trigger: "change" }],
         create_date: [{ required: true, message: "必须", trigger: "blur" }],
         ishot: [{ required: true, message: "必须", trigger: "blur" }],
         istop: [{ required: true, message: "必须", trigger: "blur" }],
         lovenum: [{ required: true, message: "必须", trigger: "blur" }],
         pic: [{ required: true, message: "必须", trigger: "change" }],
-        tags: [{ required: true, message: "必须", trigger: "blur" }],
+        tags: [{ required: true, message: "必须", trigger: "change" }],
         keywords: [{ required: true, message: "必须", trigger: "blur" }],
         description: [{ required: true, message: "必须", trigger: "blur" }],
-        // content: [{ required: true, message: "必须", trigger: "change" }],
+        content: [{ required: true, message: "必须", trigger: "change" }],
       },
       cateList: [],
       tagList: [],
-      fileList: [],
       editor: null,
       toolbarConfig: {},
       editorConfig: { placeholder: "请输入内容..." },
       mode: "default", // or 'simple'
+      id: this.$route.params.id,
     };
-  },
-
-  mounted() {
   },
   created() {
     this.initData();
+  },
+  computed: {
+    ImgList() {
+      if (this.formData.pic) {
+        const arr = this.formData.pic.split(",");
+        const list = [];
+        arr.forEach((item) => {
+          const obj = {};
+          (obj.name = "点击查看详情"),
+            (obj.url = "http://124.223.14.236:8060/" + item);
+          list.push(obj);
+        });
+        return list;
+      } else {
+        return [];
+      }
+    },
   },
   methods: {
     async initData() {
       const data = await getTagAllApi();
       this.tagList = data;
+      if (this.id) {
+        const data = await getArticleRowInfoApi({ id: this.id });
+        this.formData = data;
+        this.formData.tags = this.formData.tags.split(",");
+        console.log(this.formData.tags);
+      }
     },
     async getCateList() {
       const res = await getCateAllApi();
       this.cateList = res;
     },
-    handlePreview(file) {
-      console.log(file);
-    },
     onCreated(editor) {
       this.editor = Object.seal(editor); // 一定要用 Object.seal() ，否则会报错
     },
-    async uploadPic(file){
-        const fd = new FormData()
-        fd.append('file',file.file)
-        const {savePath} = await uploadPicApi(fd)
-        this.formData.pic = savePath
+    async addbtn() {
+      try {
+        await this.$refs.form.validate();
+      } catch (error) {
+        return console.log(error);
+      }
+      const cloneFormData = JSON.parse(JSON.stringify(this.formData));
+      cloneFormData.tags = cloneFormData.tags.toString();
+      if (this.id) {
+        await editArticleApi(cloneFormData);
+        this.$message.success("修改成功");
+      } else {
+        await addArticleApi(cloneFormData);
+        this.$message.success("添加成功");
+      }
+
+      this.$router.push("/content_article");
     },
-    async addbtn(){
-        try {
-            await this.$refs.form.validate()
-        } catch (error) {
-            return console.log(error);
-        }
-        const cloneFormData = JSON.parse(JSON.stringify(this.formData))
-       cloneFormData.tags= cloneFormData.tags.toString()
-       await addArticleApi(cloneFormData)
-       this.$message.success('添加成功')
+    async draftbtn() {
+      try {
+        await this.$refs.form.validate();
+      } catch (error) {
+        return console.log(error);
+      }
+      const cloneFormData = JSON.parse(JSON.stringify(this.formData));
+      cloneFormData.tags = cloneFormData.tags.toString();
+      cloneFormData.status = "1";
+      if (this.id) {
+        await editArticleApi(cloneFormData);
+        this.$message.success("修改成功");
+      } else {
+        await addArticleApi(cloneFormData);
+        this.$message.success("添加成功");
+      }
+      this.$router.push("/content_article");
     },
-    async draftbtn(){
-        try {
-            await this.$refs.form.validate()
-        } catch (error) {
-            return console.log(error);
-        }
-        const cloneFormData = JSON.parse(JSON.stringify(this.formData))
-       cloneFormData.tags= cloneFormData.tags.toString()
-       cloneFormData.status = 
-       await addArticleApi(cloneFormData)
-       this.$message.success('添加成功')
+    handleFileChange() {
+      this.$refs.form.clearValidate("pic");
     },
   },
   beforeDestroy() {

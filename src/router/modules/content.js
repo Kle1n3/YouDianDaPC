@@ -23,6 +23,11 @@ export default {
             path: '/content_article/add',
             component: () => import('@/views/content/article/addArticle'),
             meta: { title: '添加文章' },
-        }
+        },
+        {
+            path: '/content_article/edit/:id',
+            component: () => import('@/views/content/article/addArticle'),
+            meta: { title: '修改文章' },
+        },
     ]
 }
